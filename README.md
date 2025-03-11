@@ -56,27 +56,6 @@ Usuario: admin@example.com
 
 Contraseña: password
 
-## Uso
-Categorías: Crear/Editar desde el menú
-
-Productos: Registrar con categoría y precios
-
-Ventas: Seleccionar productos y cantidades
-
-### Tecnologías
-Laravel 9
-
-Bootstrap 5
-
-MySQL
-
-jQuery/AJAX
-
-Credenciales Admin
-
-Usuario: admin@example.com
-
-Contraseña: password
 
 # Uso
 Categorías: Crear/Editar desde el menú
