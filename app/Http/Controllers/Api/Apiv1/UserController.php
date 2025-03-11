@@ -83,11 +83,24 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         return Inertia::render('admin/users/edit', ['user' => $user]);
     }
+    
+    // public function destroy($id)
+    // {
+    //     return $this->handleResponse(
+    //         fn() => $this->userService->deleteUser($id),
+    //         message: 'Usuario eliminado'
+    //     );
+    // }
+
     public function destroy($id)
     {
-        return $this->handleResponse(
-            fn() => $this->userService->deleteUser($id),
-            message: 'Usuario eliminado'
+        return $this->handleInertiaResponse(
+            function () use ($id) {
+                $this->userService->deleteUser($id);
+            },
+            'admin.users.index',
+            'User eliminado con éxito',
+            'No se pudo eliminar la user'
         );
     }
 }

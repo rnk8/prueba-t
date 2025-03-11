@@ -17,7 +17,9 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const handleDelete = (id: number) => {
-    router.delete(`/users/${id}`);
+    if (confirm("¿Estás seguro de eliminar este usuario?")) {
+        router.delete(route('admin.users.destroy', { user: id }));
+    }
 };
 
 const handleUpdate = (id: number) => {
@@ -32,10 +34,8 @@ const handleGet = (id: number) => {
     router.get(route('users.show', { id }));
 };
 
-export default function Users() {
-    const { users } = usePage<PageProps>().props;
-    const [error, setError] = useState<string | null>(null);
-
+const UserIndex = ({ users }: PageProps) => {
+    const { errors } = usePage().props;
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Usuarios" />
@@ -55,9 +55,9 @@ export default function Users() {
 
                 <Separator />
 
-                {error && (
+                {errors && (
                     <Alert variant="destructive">
-                        <AlertDescription>{error}</AlertDescription>
+                        <AlertDescription>{errors.error}</AlertDescription>
                     </Alert>
                 )}
 
@@ -142,3 +142,4 @@ export default function Users() {
         </AppLayout>
     );
 }
+export default UserIndex;
