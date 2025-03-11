@@ -50,6 +50,11 @@ class SaleController extends Controller
             ]);
         }
     }
+    public function show()
+    {
+        return Inertia::render('admin/sales/show');
+    }
+    
 
     public function store(Request $request)
     {

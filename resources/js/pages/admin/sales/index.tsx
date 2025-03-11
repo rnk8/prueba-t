@@ -1,28 +1,31 @@
 import React, { useState } from 'react';
-import { Head, usePage, router } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, PageProps } from '@/types';
+import { BreadcrumbItem, PageProps, Sale, PaginatedData } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { LucideEye, Plus } from 'lucide-react';
 import Heading from '@/components/heading';
 import { Separator } from '@/components/ui/separator';
+import SaleShow from './show';
 
 const breadcrumbs: BreadcrumbItem[] = [
   { title: 'Ventas', href: route('admin.sales.index') },
 ];
 
-const SalesIndex = ({ sales }: PageProps) => {
-  const { errors } = usePage().props;
-  const handlePagination = (url: string | null) => {
-    if (url) {
-      router.get(url);
-    }
-  };
+interface SalesPageProps extends PageProps {
+  sales?: PaginatedData<Sale>;
+}
 
-  const handleShow = (id: number) => {
-    router.get(route('admin.sales.show', { sale: id }));
+const SalesIndex = ({ sales }: SalesPageProps) => {
+  const { errors } = usePage().props;
+  const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
+  const [showModal, setShowModal] = useState(false);
+
+  const handleShow = (sale: Sale) => {
+    setSelectedSale(sale);
+    setShowModal(true);
   };
 
   const handleStore = () => {
@@ -43,7 +46,6 @@ const SalesIndex = ({ sales }: PageProps) => {
             Nueva Venta
           </Button>
         </div>
-
 
         <Separator />
 
@@ -66,12 +68,12 @@ const SalesIndex = ({ sales }: PageProps) => {
             </TableHeader>
             <TableBody>
               {(sales?.data?.length ?? 0) > 0 ? (
-                sales?.data.map((sale: any) => (
+                sales?.data.map((sale: Sale) => (
                   <TableRow key={sale.id}>
                     <TableCell className="px-4 py-2">{sale.id}</TableCell>
                     <TableCell className="px-4 py-2">{sale.user?.name || 'N/A'}</TableCell>
                     <TableCell className="px-4 py-2 text-right">
-                      ${parseFloat(sale.total).toFixed(2)}
+                      ${typeof sale.total === 'number' ? sale.total.toFixed(2) : sale.total}
                     </TableCell>
                     <TableCell className="px-4 py-2">
                       {sale.created_at ? new Date(sale.created_at).toLocaleDateString() : 'N/A'}
@@ -81,7 +83,7 @@ const SalesIndex = ({ sales }: PageProps) => {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => handleShow(sale.id)}
+                          onClick={() => handleShow(sale)}
                           className="h-8 w-8 p-0"
                         >
                           <LucideEye className="h-4 w-4" />
@@ -100,27 +102,11 @@ const SalesIndex = ({ sales }: PageProps) => {
             </TableBody>
           </Table>
         </div>
-
-        {/* Paginación Mejorada */}
-        <div className="flex justify-center items-center gap-4 mt-4">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handlePagination(sales?.links?.next ?? null)}
-            disabled={sales?.meta?.current_page === 1}
-          >
-            Anterior
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handlePagination(sales?.links?.next ?? null)}
-            disabled={sales?.meta?.current_page === sales?.meta?.last_page}
-          >
-            Siguiente
-          </Button>
-        </div>
       </div>
+
+      {selectedSale && (
+        <SaleShow sale={selectedSale} open={showModal} onClose={() => setShowModal(false)} />
+      )}
     </AppLayout>
   );
 };

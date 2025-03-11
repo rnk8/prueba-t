@@ -13,11 +13,14 @@ const ProductShow = ({ product, open, onClose }: ProductShowProps) => {
   const additionalInfo = Object.entries(product).filter(
     ([key]) => key !== 'product_name' && key !== 'description'
   );
-  const formatValue = (value: any) => {
+
+  // Reemplazando any con unknown para mayor seguridad tipográfica
+  const formatValue = (value: unknown) => {
     if (typeof value === 'object' && value !== null) {
-         return value.name || JSON.stringify(value);
+      return (value as { name?: string }).name || JSON.stringify(value);
     }
-    return value;
+    return String(value);
+
   };
 
   return (

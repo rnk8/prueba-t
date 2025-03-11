@@ -109,9 +109,22 @@ export interface EditProductProps {
 
 export interface Sale {
   id: number;
-  user_id: number;
   total: number;
+  created_at: string;
+  user: {
+    id: number;
+    name: string;
+  };
+  products: {
+    id: number;
+    name: string;
+    pivot: {
+      quantity: number;
+      unit_price: number;
+    };
+  }[];
 }
+
 export interface FlashMessage {
   success?: string;
   error?: string;
